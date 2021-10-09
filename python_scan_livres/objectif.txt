@@ -1,0 +1,9 @@
+objectif du bot: 
+
+rentrer le numéro du code bar dans une BDD
+allez interroger une API de bot 
+verifier le prix du livre 
+afficher le prix du livre dans une BDD
+
+faire un graphe d'évolution du prix pour chaque livre
+
