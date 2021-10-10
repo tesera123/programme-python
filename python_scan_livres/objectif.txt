@@ -2,5 +2,11 @@ objectif du bot:
 
 lire un fichier texte contenant les codes: OK
 interroger une api pour avoir les informations du livres: OK
-stocker les informations dans un json et les lires
+stocker les informations dans un json et les lires OK
 
+faire un dictionnaire des informations : 
+exemple:
+    manga
+        Shibuya Hell Tome 5
+            ISBN
+            LIEN google
