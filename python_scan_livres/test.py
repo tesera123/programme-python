@@ -3,6 +3,7 @@ import requests
 import json
 import requests as req
 import re
+import sqlite3
 
 from os import listdir
 from os.path import isfile, join
@@ -17,6 +18,13 @@ api_key = "AIzaSyDQCmVtPm4rWhmRrIvonLuy8SS3-rjJQO0"
 
 file = open('livres.txt', "r")
 lines = file.readlines()
+
+conn = sqlite3.connect('ma_base.db')
+
+def dictionnaire(livre,isbn,api):
+    temp = {'livre':livre,"isbn":isbn,"api":api}
+    print(temp)
+
 
 with open('livres.txt', 'r') as f:
     for line in f:
@@ -36,8 +44,7 @@ with open('livres.txt', 'r') as f:
             reponse_api = f"https://www.googleapis.com/books/v1/volumes?q=isbn:{line}&key={api_key}"
             res = requests.get(reponse_api)
             data = res.json()
-            #data = res.json()
-            #clé api google AIzaSyDQCmVtPm4rWhmRrIvonLuy8SS3-rjJQO0
+
             with open('json.json', 'w') as f:
                 json.dump(data, f)
 
@@ -57,8 +64,25 @@ with open('livres.txt', 'r') as f:
             result = re.sub('- Google Livres</title>','', str(result))
             print(result)
 
-            w = open('title.txt', "a")
-            w.write(str(result))
-            w.write('\n')
+            #w = open('title.txt', "a")
+            #w.write(str(result))
+           # w.write('\n')
+
+            conn = sqlite3.connect('ma_base.db')
+            cursor = conn.cursor()
+            cursor.execute("""
+            CREATE TABLE IF NOT EXISTS BDD_livres(
+                id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
+                livres TEXT,
+                isbn INTERGER,
+                api TEXT
+            )
+            """)
+            data = {"livres" : result, "isbn" : line, "api" : var}
+            cursor.execute("""
+            INSERT INTO BDD_livres(livres, isbn, api) VALUES(:livres, :isbn, :api)""", data)
+            conn.commit()
+
+
         line = file.readline()
     file.close()
