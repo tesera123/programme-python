@@ -64,10 +64,6 @@ with open('livres.txt', 'r') as f:
             result = re.sub('- Google Livres</title>','', str(result))
             print(result)
 
-            #w = open('title.txt', "a")
-            #w.write(str(result))
-           # w.write('\n')
-
             conn = sqlite3.connect('ma_base.db')
             cursor = conn.cursor()
             cursor.execute("""
