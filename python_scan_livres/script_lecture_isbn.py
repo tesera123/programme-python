@@ -8,7 +8,7 @@ import sqlite3
 from os import listdir
 from os.path import isfile, join
 from bs4 import BeautifulSoup
-
+from definition import stockage_dans_la_bdd,parse_html
 
 #chemin_classique
 chemin_repertoire_git = os.getcwd()
@@ -41,30 +41,8 @@ with open("livres.txt", 'r') as f:
         for elt in test:
             var = elt['volumeInfo']['infoLink']
 
-        reqs = requests.get(var)
-        reqs.content
-        recherche_titre = BeautifulSoup(reqs.content, 'html.parser')
-        title = recherche_titre.find('title')
-        print(title)
-        result = re.sub('<title>','', str(title))
-        result = re.sub('- Google Livres</title>','', str(result))
-        print(result)
-
-        conn = sqlite3.connect('ma_base.db')
-        cursor = conn.cursor()
-        cursor.execute(f"""
-        CREATE TABLE IF NOT EXISTS {line_split[0]}(
-            id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
-            livres TEXT,
-            isbn INTERGER,
-            api TEXT
-        )
-        """)
-        data = {"livres" : result, "isbn" : line_split[1], "api" : var}
-        cursor.execute(f"""
-        INSERT INTO {line_split[0]}(livres, isbn, api) VALUES(:livres, :isbn, :api)""", data)
-        conn.commit()
-
+        parse_html(var)
+        stockage_dans_la_bdd('ma_base.db',line_split,var)
 
         line = file.readline()
     file.close()
