@@ -8,8 +8,8 @@ import sqlite3
 from os import listdir
 from os.path import isfile, join
 from bs4 import BeautifulSoup
-from definition import stockage_dans_la_bdd,parse_html,recherche_dans_bdd
-
+#from definition import stockage_dans_la_bdd,parse_html,recherche_dans_bdd,creation_de_la_bdd
+from definition import *
 #chemin_classique
 chemin_repertoire_git = os.getcwd()
 chemin_windows = f"{chemin_repertoire_git}\python_scan_livres"
@@ -20,11 +20,12 @@ arr = os.listdir('.')
 api_key = "AIzaSyDQCmVtPm4rWhmRrIvonLuy8SS3-rjJQO0"
 conn = sqlite3.connect('ma_base.db')
 file = open('livres.txt', "r")
+bdd = 'ma_base.db'
 
 with open("livres.txt", 'r') as f:
     for line in f:
     #for line in lines:
-        print(line)
+        #print(line)
         line_split = line.split("-")
         print(line_split)
 
@@ -43,8 +44,13 @@ with open("livres.txt", 'r') as f:
             var = elt['volumeInfo']['infoLink']
 
         parse_html(var)
-        recherche_dans_bdd('ma_base.db',line_split[1])
-        stockage_dans_la_bdd('ma_base.db',line_split,var)
+        creation_de_la_bdd(bdd,line_split)
+        recherche_dans_bdd(bdd,line_split[1])
+
+        var_verification = recherche_dans_bdd(bdd,line_split[1])
+
+        if var_verification == "NEGATIF":
+            stockage_dans_la_bdd(bdd,line_split,var)
         
         line = file.readline()
     file.close()

@@ -12,7 +12,9 @@ def parse_html(variable):
     result = re.sub('<title>','', str(title))
     result = re.sub('- Google Livres</title>','', str(result))
 
-def stockage_dans_la_bdd(bdd,line_split,var):
+def creation_de_la_bdd(bdd,line_split):
+    global cursor
+    global conn
     conn = sqlite3.connect(bdd)
     cursor = conn.cursor()
     cursor.execute(f"""
@@ -23,6 +25,8 @@ def stockage_dans_la_bdd(bdd,line_split,var):
         api TEXT
     )
     """)
+    
+def stockage_dans_la_bdd(bdd,line_split,var):
     data = {"livres" : result, "isbn" : line_split[1], "api" : var}
     cursor.execute(f"""
     INSERT INTO {line_split[0]}(livres, isbn, api) VALUES(:livres, :isbn, :api)""", data)
@@ -34,17 +38,25 @@ def recherche_dans_bdd(var_bdd,var_isbn):
     conn = sqlite3.connect(var_bdd)
     curseur = conn.cursor()
 
-    manga = "SELECT isbn FROM MANGA"
+    MANGA = "SELECT isbn FROM MANGA"
     DC = "select isbn from DC"
-    marvel = "select isbn from MARVEL"
-    recherche = [manga,DC]
+    MARVEL = "select isbn from MARVEL"
+    recherche = [MANGA,DC,MARVEL] 
 
     for var_recherche in recherche:
-        resultat = curseur.execute(var_recherche)
-        for row in resultat:
-            print(row[0])
-            if row[0] == var_isbn:
-                print("livre déja present dans la bdd")
-                var_verification = "POSITIF"
-                break
+        try:
+            resultat = curseur.execute(var_recherche)
+            found = cursor.rowcount
+        except:
+            break
+        if not found:
+            break
+        else:
+            for row in resultat:
+                #print(row[0])
+                if row[0] == var_isbn:
+                    print("livre déja present dans la bdd")
+                    var_verification = "POSITIF"
+                    break
+    return var_verification
     conn.close()
