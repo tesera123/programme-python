@@ -8,7 +8,7 @@ import sqlite3
 from os import listdir
 from os.path import isfile, join
 from bs4 import BeautifulSoup
-from definition import stockage_dans_la_bdd,parse_html
+from definition import stockage_dans_la_bdd,parse_html,recherche_dans_bdd
 
 #chemin_classique
 chemin_repertoire_git = os.getcwd()
@@ -16,6 +16,7 @@ chemin_windows = f"{chemin_repertoire_git}\python_scan_livres"
 var_fichier = "livres.txt"
 os.chdir(chemin_windows) 
 arr = os.listdir('.')
+
 api_key = "AIzaSyDQCmVtPm4rWhmRrIvonLuy8SS3-rjJQO0"
 conn = sqlite3.connect('ma_base.db')
 file = open('livres.txt', "r")
@@ -42,7 +43,9 @@ with open("livres.txt", 'r') as f:
             var = elt['volumeInfo']['infoLink']
 
         parse_html(var)
+        recherche_dans_bdd('ma_base.db',line_split[1])
         stockage_dans_la_bdd('ma_base.db',line_split,var)
-
+        
         line = file.readline()
     file.close()
+os.remove("lecture_php.json")

@@ -27,3 +27,24 @@ def stockage_dans_la_bdd(bdd,line_split,var):
     cursor.execute(f"""
     INSERT INTO {line_split[0]}(livres, isbn, api) VALUES(:livres, :isbn, :api)""", data)
     conn.commit()
+
+def recherche_dans_bdd(var_bdd,var_isbn):
+    global var_verification
+    var_verification = "NEGATIF"
+    conn = sqlite3.connect(var_bdd)
+    curseur = conn.cursor()
+
+    manga = "SELECT isbn FROM MANGA"
+    DC = "select isbn from DC"
+    marvel = "select isbn from MARVEL"
+    recherche = [manga,DC]
+
+    for var_recherche in recherche:
+        resultat = curseur.execute(var_recherche)
+        for row in resultat:
+            print(row[0])
+            if row[0] == var_isbn:
+                print("livre déja present dans la bdd")
+                var_verification = "POSITIF"
+                break
+    conn.close()
