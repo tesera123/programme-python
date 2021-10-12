@@ -4,13 +4,12 @@ import json
 import requests as req
 import re
 import sqlite3
-
 from os import listdir
 from os.path import isfile, join
 from bs4 import BeautifulSoup
-from definition import parse_html,creation_de_la_bdd,recherche_et_stockage_bdd
-#from definition import *
-#chemin_classique
+from definition import parse_html,creation_de_la_bdd,recherche_et_stockage_bdd,stockage_dans_la_bdd
+
+
 chemin_repertoire_git = os.getcwd()
 chemin_windows = f"{chemin_repertoire_git}\python_scan_livres"
 var_fichier = "livres.txt"
@@ -24,7 +23,6 @@ bdd = 'ma_base.db'
 
 with open("livres.txt", 'r') as f:
     for line in f:
-    #for line in lines:
         #print(line)
         line_split = line.split("-")
         print(line_split)
@@ -46,9 +44,9 @@ with open("livres.txt", 'r') as f:
         parse_html(var)
         creation_de_la_bdd(bdd,line_split)
         #recherche_dans_bdd(bdd,line_split[1])
+        recherche_et_stockage_bdd(bdd,line_split,var)
+        #stockage_dans_la_bdd(line_split,var,bdd)
 
-        recherche_et_stockage_bdd(bdd) 
-        
         line = file.readline()
     file.close()
 os.remove("lecture_php.json")

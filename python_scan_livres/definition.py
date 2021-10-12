@@ -27,20 +27,43 @@ def creation_de_la_bdd(bdd,line_split):
     """)
     conn.close()
 
-def recherche_et_stockage_bdd(var_bdd):
+def recherche_et_stockage_bdd(var_bdd,line_split,var):
     global cursor
     global var_verif
     connection = sqlite3.connect(var_bdd)
     cursor = connection.cursor()
     
-    MANGA = "SELECT isbn FROM MANGA"
-    DC = "select isbn from DC"
-    MARVEL = "select isbn from MARVEL"
-    recherche = [MANGA,DC,MARVEL] 
+    data = {"livres" : result, "isbn" : line_split[1], "api" : var}
 
+
+    cursor.execute(f'SELECT isbn FROM {line_split[0]}')
+    r = cursor.fetchall()
+    cursor.execute(f'SELECT isbn FROM {line_split[0]} WHERE isbn = "{line_split[1]}"')
+    a = cursor.fetchall()
+    print("valeur de isbn total",r)
+    print("valeur d'un isbn",a)
+
+    if not a:
+        print("valeur vide")
+        cursor.execute(f"""
+        INSERT INTO {line_split[0]}(livres, isbn, api) VALUES(:livres, :isbn, :api)""", data)
+        connection.commit()
+    else:
+        print("valeur pleine, pas d'incrémentation")
+
+
+
+    connection.close()
+    #cursor.execute('SELECT name from sqlite_master where type= "table"')
+    #cursor.execute(commande)
+    #cursor.execute(commande2, (id,))
+    #print("resultat de la recherche:",cursor.fetchall()) 
+    #print("resultat de la recherche:",cursor.fetchall()) 
+
+"""""
     for i in recherche:
         print(i)
-        stmt = "SHOW TABLES"
+        stmt = (".tables")
         print(stmt)
         cursor.execute(stmt)
         result = con.fetchone()
@@ -48,12 +71,19 @@ def recherche_et_stockage_bdd(var_bdd):
             print("la table {i} existe bien")
         else:
             print("la table n'existe pas")
+"""
 
-def stockage_dans_la_bdd(line_split,var):
+
+
+
+def stockage_dans_la_bdd(line_split,var,var_bdd):
+    conn = sqlite3.connect(var_bdd)
+    cursor = conn.cursor()
     data = {"livres" : result, "isbn" : line_split[1], "api" : var}
     cursor.execute(f"""
     INSERT INTO {line_split[0]}(livres, isbn, api) VALUES(:livres, :isbn, :api)""", data)
     conn.commit()
+    conn.close()
 
 def recherche_dans_bdd(var_bdd,var_isbn):
     global var_verification
