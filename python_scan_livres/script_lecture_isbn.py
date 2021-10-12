@@ -8,8 +8,8 @@ import sqlite3
 from os import listdir
 from os.path import isfile, join
 from bs4 import BeautifulSoup
-#from definition import stockage_dans_la_bdd,parse_html,recherche_dans_bdd,creation_de_la_bdd
-from definition import *
+from definition import parse_html,creation_de_la_bdd,recherche_et_stockage_bdd
+#from definition import *
 #chemin_classique
 chemin_repertoire_git = os.getcwd()
 chemin_windows = f"{chemin_repertoire_git}\python_scan_livres"
@@ -45,12 +45,9 @@ with open("livres.txt", 'r') as f:
 
         parse_html(var)
         creation_de_la_bdd(bdd,line_split)
-        recherche_dans_bdd(bdd,line_split[1])
+        #recherche_dans_bdd(bdd,line_split[1])
 
-        var_verification = recherche_dans_bdd(bdd,line_split[1])
-
-        if var_verification == "NEGATIF":
-            stockage_dans_la_bdd(bdd,line_split,var)
+        recherche_et_stockage_bdd(bdd) 
         
         line = file.readline()
     file.close()

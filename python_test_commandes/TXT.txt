@@ -1,0 +1,23 @@
+
+"""""
+    for var_recherche in recherche:
+        try:
+            print("try")
+            resultat = curseur.execute(var_recherche)
+            found = cursor.rowcount
+        except:
+            print("on est dans except")
+            break
+        if not found:
+            print("ajout dans la bdd")
+            data = {"livres" : result, "isbn" : line_split[1], "api" : var}
+            cursor.execute(f"""
+            INSERT INTO {line_split[0]}(livres, isbn, api) VALUES(:livres, :isbn, :api)""", data)
+            conn.commit()   
+        else:
+            for row in resultat:
+                #print(row[0])
+                if row[0] == var_isbn:
+                    print("livre déja present dans la bdd")
+                    break
+"""

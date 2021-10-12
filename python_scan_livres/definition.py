@@ -25,8 +25,31 @@ def creation_de_la_bdd(bdd,line_split):
         api TEXT
     )
     """)
+    conn.close()
+
+def recherche_et_stockage_bdd(var_bdd):
+    global cursor
+    global var_verif
+    connection = sqlite3.connect(var_bdd)
+    cursor = connection.cursor()
     
-def stockage_dans_la_bdd(bdd,line_split,var):
+    MANGA = "SELECT isbn FROM MANGA"
+    DC = "select isbn from DC"
+    MARVEL = "select isbn from MARVEL"
+    recherche = [MANGA,DC,MARVEL] 
+
+    for i in recherche:
+        print(i)
+        stmt = "SHOW TABLES"
+        print(stmt)
+        cursor.execute(stmt)
+        result = con.fetchone()
+        if result:
+            print("la table {i} existe bien")
+        else:
+            print("la table n'existe pas")
+
+def stockage_dans_la_bdd(line_split,var):
     data = {"livres" : result, "isbn" : line_split[1], "api" : var}
     cursor.execute(f"""
     INSERT INTO {line_split[0]}(livres, isbn, api) VALUES(:livres, :isbn, :api)""", data)
@@ -46,6 +69,7 @@ def recherche_dans_bdd(var_bdd,var_isbn):
     for var_recherche in recherche:
         try:
             resultat = curseur.execute(var_recherche)
+            print(resultat)
             found = cursor.rowcount
         except:
             break
