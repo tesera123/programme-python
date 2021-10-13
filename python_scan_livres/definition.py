@@ -2,15 +2,18 @@ import sqlite3
 import requests
 from bs4 import BeautifulSoup
 import re
+import json
 
-def parse_html(variable):
+def parse_html(var):
     global result
-    reqs = requests.get(variable)
+    reqs = requests.get(var)
     reqs.content
     recherche_titre = BeautifulSoup(reqs.content, 'html.parser')
     title = recherche_titre.find('title')
     result = re.sub('<title>','', str(title))
     result = re.sub('- Google Livres</title>','', str(result))
+
+
 
 def creation_de_la_bdd(bdd,line_split):
     global cursor

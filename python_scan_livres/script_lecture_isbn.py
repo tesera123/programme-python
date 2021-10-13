@@ -1,40 +1,41 @@
 import os
 import requests
 import json
-import requests as req
-import re
+import requests
 import sqlite3
+
 from os import listdir
 from os.path import isfile, join
 from bs4 import BeautifulSoup
-from definition import parse_html,creation_de_la_bdd,recherche_et_stockage_bdd,stockage_dans_la_bdd
+from definition import parse_html,creation_de_la_bdd,recherche_et_stockage_bdd
 
-
+# ***************** CHEMIN DE BASE ***************** 
 chemin_repertoire_git = os.getcwd()
 chemin_windows = f"{chemin_repertoire_git}\python_scan_livres"
 var_fichier = "livres.txt"
 os.chdir(chemin_windows) 
 arr = os.listdir('.')
 
+
+# ***************** clé et fichier de reference ***************** 
 api_key = "AIzaSyDQCmVtPm4rWhmRrIvonLuy8SS3-rjJQO0"
 conn = sqlite3.connect('ma_base.db')
 file = open('livres.txt', "r")
 bdd = 'ma_base.db'
+var_json = 'lecture_php.json'
 
 with open("livres.txt", 'r') as f:
     for line in f:
-        #print(line)
         line_split = line.split("-")
-        print(line_split)
 
         reponse_api = f"https://www.googleapis.com/books/v1/volumes?q=isbn:{line_split[1]}&key={api_key}"
         res = requests.get(reponse_api)
         data = res.json()
 
-        with open('lecture_php.json', 'w') as f:
+        with open(var_json, 'w') as f:
             json.dump(data, f)
 
-        json_data = open(r'lecture_php.json').read()
+        json_data = open(var_json).read()
         data = json.loads(json_data)
         print(data.keys())
         test = data['items']
@@ -43,9 +44,7 @@ with open("livres.txt", 'r') as f:
 
         parse_html(var)
         creation_de_la_bdd(bdd,line_split)
-        #recherche_dans_bdd(bdd,line_split[1])
         recherche_et_stockage_bdd(bdd,line_split,var)
-        #stockage_dans_la_bdd(line_split,var,bdd)
 
         line = file.readline()
     file.close()

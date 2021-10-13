@@ -7,7 +7,7 @@ import sqlite3
 from os import listdir
 from os.path import isfile, join
 from bs4 import BeautifulSoup
-from definition import recherche_et_stockage_bdd
+#rom definition import recherche_et_stockage_bdd
 
 bdd = "ma_base.db"
 chemin_repertoire_git = os.getcwd()
@@ -18,4 +18,4 @@ arr = os.listdir('.')
 
 conn = sqlite3.connect(bdd)
 
-recherche_et_stockage_bdd(bdd)
+#recherche_et_stockage_bdd(bdd)
