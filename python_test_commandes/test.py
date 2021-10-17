@@ -1,74 +1,55 @@
 import os
-import requests
 import json
-import requests as req
-import re
+import requests
 import sqlite3
 
 from os import listdir
-from os.path import isfile, join
 from bs4 import BeautifulSoup
-
+from definition import *
+# ***************** CHEMIN DE BASE ***************** 
 chemin_repertoire_git = os.getcwd()
 chemin_windows = f"{chemin_repertoire_git}\python_scan_livres"
+var_fichier = "livres.txt"
 os.chdir(chemin_windows) 
 arr = os.listdir('.')
 
+
+# ***************** clé et fichier de reference ***************** 
 api_key = "AIzaSyDQCmVtPm4rWhmRrIvonLuy8SS3-rjJQO0"
-
-file = open('livres.txt', "r")
-lines = file.readlines()
-
 conn = sqlite3.connect('ma_base.db')
+file = open('livres.txt', "r")
+bdd = 'ma_base.db'
+var_json = 'lecture_php.json'
 
-def dictionnaire(livre,isbn,api):
-    temp = {'livre':livre,"isbn":isbn,"api":api}
-    print(temp)
+print("rentré le type de livre")
+categorie = input()
+print("rentré le livre (si plusieurs, mettre un séparateur ',')")
+livres = input()
 
 
-with open('livres.txt', 'r') as f:
+
+with open("livres.txt", 'r') as f:
     for line in f:
-    #for line in lines:
-        print(line)
-        
-        reponse_api = f"https://www.googleapis.com/books/v1/volumes?q=isbn:{line}&key={api_key}"
+        line_split = line.split("-")
+
+        reponse_api = f"https://www.googleapis.com/books/v1/volumes?q=isbn:{line_split[1]}&key={api_key}"
         res = requests.get(reponse_api)
         data = res.json()
 
-        with open('json.json', 'w') as f:
+        with open(var_json, 'w') as f:
             json.dump(data, f)
 
-        json_data = open(r'json.json').read()
+        json_data = open(var_json).read()
         data = json.loads(json_data)
         print(data.keys())
         test = data['items']
         for elt in test:
             var = elt['volumeInfo']['infoLink']
 
-        reqs = requests.get(var)
-        reqs.content
-        recherche_titre = BeautifulSoup(reqs.content, 'html.parser')
-        title = recherche_titre.find('title')
-        print(title)
-        result = re.sub('<title>','', str(title))
-        result = re.sub('- Google Livres</title>','', str(result))
-        print(result)
-
-        conn = sqlite3.connect('ma_base.db')
-        cursor = conn.cursor()
-        cursor.execute("""
-        CREATE TABLE IF NOT EXISTS BDD_livres(
-            id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
-            livres TEXT,
-            isbn INTERGER,
-            api TEXT
-        )
-        """)
-        data = {"livres" : result, "isbn" : line, "api" : var}
-        cursor.execute("""
-        INSERT INTO BDD_livres(livres, isbn, api) VALUES(:livres, :isbn, :api)""", data)
-        conn.commit()
-
+        parse_html(var)
+        creation_de_la_bdd(bdd,line_split)
+        recherche_et_stockage_bdd(bdd,line_split,var)
 
         line = file.readline()
     file.close()
+os.remove("lecture_php.json")
