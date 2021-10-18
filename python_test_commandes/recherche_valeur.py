@@ -9,13 +9,22 @@ from os.path import isfile, join
 from bs4 import BeautifulSoup
 #rom definition import recherche_et_stockage_bdd
 
-bdd = "ma_base.db"
-chemin_repertoire_git = os.getcwd()
-chemin_windows = f"{chemin_repertoire_git}\python_scan_livres"
-var_fichier = "livres.txt"
-os.chdir(chemin_windows) 
-arr = os.listdir('.')
 
-conn = sqlite3.connect(bdd)
+def parse_html(var,isbn):
+    global result
+    reqs = requests.get(var)
+    reqs.content
+    recherche_titre = BeautifulSoup(reqs.content, 'html.parser')
+    title = recherche_titre.find('title')
+    title = re.sub('<title>','', str(title))
+    title = re.sub('</title>','', str(title))
+    title = re.sub(f'({isbn})','^_^', str(title))
+    print(title)
 
-#recherche_et_stockage_bdd(bdd)
+    table = recherche_titre.find('span', {'class': 'results-price'})
+    price = table.get_text()
+    real_price = price.strip()
+    print(real_price)
+
+isbn = "9791032704028"
+parse_html(f"https://www.justbooks.fr/search/?keywords={isbn}&currency=EUR&destination=fr&mode=isbn&classic=off&lang=fr&st=sh&ac=qr&submit=",isbn)

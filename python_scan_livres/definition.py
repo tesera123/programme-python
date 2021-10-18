@@ -4,14 +4,21 @@ from bs4 import BeautifulSoup
 import re
 import json
 
-def parse_html(var):
-    global result
+def parse_html(var,isbn):
+    global euro
     reqs = requests.get(var)
     reqs.content
     recherche_titre = BeautifulSoup(reqs.content, 'html.parser')
     title = recherche_titre.find('title')
-    result = re.sub('<title>','', str(title))
-    result = re.sub('- Google Livres</title>','', str(result))
+    title = re.sub('<title>','', str(title))
+    title = re.sub('</title>','', str(title))
+    title = re.sub(f'({isbn})','^_^', str(title))
+    print(title)
+
+    table = recherche_titre.find('span', {'class': 'results-price'})
+    euro = (table.get_text())
+    euro = re.sub('€','', str(euro))
+    print(euro)
 
 def creation_de_la_bdd(bdd,categorie):
     global cursor
@@ -23,6 +30,7 @@ def creation_de_la_bdd(bdd,categorie):
         id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
         livres TEXT,
         isbn INTERGER,
+        prix INTERGER,
         api TEXT
     )
     """)
@@ -30,10 +38,24 @@ def creation_de_la_bdd(bdd,categorie):
 
 def recherche_et_stockage_bdd(var_bdd,decoupe_isbn,categorie,var):
     global cursor
-    global var_verif
+
+    reqs = requests.get(var)
+    reqs.content
+    recherche_titre = BeautifulSoup(reqs.content, 'html.parser')
+    title = recherche_titre.find('title')
+    title = re.sub('<title>','', str(title))
+    title = re.sub('</title>','', str(title))
+    title = re.sub(f'({decoupe_isbn})','^_^', str(title))
+    print(title)
+
+    table = recherche_titre.find('span', {'class': 'results-price'})
+    price = table.get_text()
+    euro = price.strip()
+    print(euro)
+
     connection = sqlite3.connect(var_bdd)
     cursor = connection.cursor()
-    data = {"livres" : result, "isbn" : decoupe_isbn, "api" : var}
+    data = {"livres" : title, "isbn" : decoupe_isbn, "api" : var, "prix": euro }
     cursor.execute(f'SELECT isbn FROM {categorie}')
     r = cursor.fetchall()
     cursor.execute(f'SELECT isbn FROM {categorie} WHERE isbn = "{decoupe_isbn}"')
@@ -44,18 +66,8 @@ def recherche_et_stockage_bdd(var_bdd,decoupe_isbn,categorie,var):
     if not a:
         print("valeur vide")
         cursor.execute(f"""
-        INSERT INTO {line_split[0]}(livres, isbn, api) VALUES(:livres, :isbn, :api)""", data)
+        INSERT INTO {categorie}(livres, isbn, api, prix) VALUES(:livres, :isbn, :api, :prix)""", data)
         connection.commit()
     else:
         print("valeur pleine, pas d'incrémentation")
     connection.close()
-
-
-def stockage_dans_la_bdd(line_split,var,var_bdd):
-    conn = sqlite3.connect(var_bdd)
-    cursor = conn.cursor()
-    data = {"livres" : result, "isbn" : line_split[1], "api" : var}
-    cursor.execute(f"""
-    INSERT INTO {line_split[0]}(livres, isbn, api) VALUES(:livres, :isbn, :api)""", data)
-    conn.commit()
-    conn.close()
