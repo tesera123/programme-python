@@ -20,6 +20,9 @@ def parse_html(var,isbn):
     euro = re.sub('€','', str(euro))
     print(euro)
 
+
+
+
 def creation_de_la_bdd(bdd,categorie):
     global cursor
     global conn
@@ -36,6 +39,10 @@ def creation_de_la_bdd(bdd,categorie):
     """)
     conn.close()
 
+
+
+
+
 def recherche_et_stockage_bdd(var_bdd,decoupe_isbn,categorie,var):
     global cursor
 
@@ -49,6 +56,7 @@ def recherche_et_stockage_bdd(var_bdd,decoupe_isbn,categorie,var):
     print(title)
 
     table = recherche_titre.find('span', {'class': 'results-price'})
+    print(table)
     price = table.get_text()
     euro = price.strip()
     print(euro)
@@ -57,8 +65,10 @@ def recherche_et_stockage_bdd(var_bdd,decoupe_isbn,categorie,var):
     cursor = connection.cursor()
     data = {"livres" : title, "isbn" : decoupe_isbn, "api" : var, "prix": euro }
     cursor.execute(f'SELECT isbn FROM {categorie}')
+
     r = cursor.fetchall()
     cursor.execute(f'SELECT isbn FROM {categorie} WHERE isbn = "{decoupe_isbn}"')
+
     a = cursor.fetchall()
     print("valeur de isbn total",r)
     print("valeur d'un isbn",a)
@@ -66,8 +76,15 @@ def recherche_et_stockage_bdd(var_bdd,decoupe_isbn,categorie,var):
     if not a:
         print("valeur vide")
         cursor.execute(f"""
-        INSERT INTO {categorie}(livres, isbn, api, prix) VALUES(:livres, :isbn, :api, :prix)""", data)
+        INSERT INTO {categorie}(livres, isbn, prix, api) VALUES(:livres, :isbn, :prix, :api)""", data)
         connection.commit()
     else:
         print("valeur pleine, pas d'incrémentation")
     connection.close()
+
+def supression_entree_sqlite3(categorie,bdd,id):
+    conn = sqlite3.connect(bdd)
+    cur = conn.cursor()
+    sql = f"DELETE FROM {categorie} WHERE id = {id}"
+    cur.execute(sql)
+    conn.commit()
