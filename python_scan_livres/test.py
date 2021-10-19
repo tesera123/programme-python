@@ -14,11 +14,24 @@ os.chdir(chemin_windows)
 arr = os.listdir('.')
 
 # ***************** clé et fichier de reference ***************** 
-conn = sqlite3.connect('ma_base.db')
-bdd = 'ma_base.db'
-var_json = 'lecture_php.json'
+conn = sqlite3.connect('bdd_livres.db')
+bdd = 'bdd_livres.db'
 cur = conn.cursor()
 
-sql = "DELETE FROM DC WHERE id = 7"
-cur.execute(sql)
-conn.commit()
+#sql = "DELETE FROM MANGA WHERE id = 5"
+#sql = "Select * from MANGA order by livres asc"
+sql = "SELECT prix REPLACE(prix,'€','') FROM MANGA"
+
+cur.execute("update MANGA set prix=replace(prix,'€','test')")
+
+
+#cur.execute(sql)
+
+
+
+#res = cur.fetchall()
+#for line in res:
+#  print(line)
+
+
+#conn.commit()
