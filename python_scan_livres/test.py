@@ -41,7 +41,7 @@ while i < rowcount:
     modif = list(lecture[i])
     #modife = modif.replace("€","")
     modife = [item.replace('€', '') for item in modif]
-    print(modif)
+    print(modife)
 
 
     test = 0 + valeur
