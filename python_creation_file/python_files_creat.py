@@ -1,4 +1,5 @@
 import os
+import glob, os
 
 chemin_repertoire = os.getcwd()
 
@@ -33,3 +34,8 @@ if lst[0] == "fr":
 
 var_chaine = "/".join(lst)
 print(var_chaine)
+
+
+os.chdir("/mydir")
+for file in glob.glob("*.txt"):
+    print(file)

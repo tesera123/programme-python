@@ -3,6 +3,25 @@ import requests
 from bs4 import BeautifulSoup
 import re
 
+"""
+def parse_html(var,isbn):
+    euro = 0
+    reqs = requests.get(var)
+    reqs.content
+    recherche_titre = BeautifulSoup(reqs.content, 'html.parser')
+    title = recherche_titre.find('title')
+    title = re.sub('<title>','', str(title))
+    title = re.sub('</title>','', str(title))
+    title = re.sub(f'({isbn})','^_^', str(title))
+    print(title)
+
+    table = recherche_titre.find('span', {'class': 'results-price'})
+    euro = table.get_text()
+    #euro = re.sub('€','', str(euro))
+    #print(euro)
+"""
+
+
 
 def creation_de_la_bdd(bdd,categorie):
     conn = sqlite3.connect(bdd)
@@ -20,12 +39,14 @@ def creation_de_la_bdd(bdd,categorie):
 
 
 
+
+
 def recherche_et_stockage_bdd(var_bdd,decoupe_isbn,categorie,var):
     reqs = requests.get(var)
     reqs.content
     recherche_titre = BeautifulSoup(reqs.content, 'html.parser')
     print(recherche_titre)
-
+    
     title = recherche_titre.find('title')
     title = re.sub('<title>','', str(title))
     title = re.sub('</title>','', str(title))
