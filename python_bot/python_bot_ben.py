@@ -1,10 +1,28 @@
 import discord
+from files import *
 
+bot = discord.Client()
+default_intents = discord.Intents.default()
+default_intents.members = True
+client = discord.Client(intents=default_intents)
 
-client = discord.Client()
-
-@client.event
+@bot.event
 async def on_ready():
-    print("le bot est pret")
+    print("le bot est pret et fonctionnel ")
 
-client.run("OTYyODA4NTc0MTI2NDg1NTU0.YlM7XA.qeBkH0p-LmXsAz_cQ2UCp9sbFnc")
+@bot.event
+async def on_member_join(member):
+    #channe test
+    channel = bot.get_channel(964561010054791208)
+    await channel.send(f"Bienvenue a {member.mention} sur le serveur !")
+
+
+@bot.event
+async def on_message(message):
+    #print(message.content)
+    if message.content == "ping":
+       await message.channel.send("pong")
+
+bot.run(bot_api())
+
+
