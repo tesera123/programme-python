@@ -1,0 +1,6 @@
+but du jeu :
+arrivé d'un user
+bloqué avec un role bienvenue
+proposé du coup des boutons pour affecté des roles
+une fois les roles choisis, enlevé le role bienvenue
+et gogogogo
