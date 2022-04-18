@@ -4,3 +4,19 @@ bloqué avec un role bienvenue
 proposé du coup des boutons pour affecté des roles
 une fois les roles choisis, enlevé le role bienvenue
 et gogogogo
+
+
+maj 19/04/2022:
+arrivé d'un user : ok
+    géré sans pb dans le script affect_role_if_new_member.py
+
+bloqué avec un role bienvenue : ok 
+    géré sans pb dans le script affect_role_if_new_member.py
+proposé du coup des boutons pour affecté des roles: ok 
+    géré dans le script class_roles_message_emoji.py
+
+une fois les roles choisis, enlevé le role bienvenue: ok 
+    géré dans le script class_roles_message_emoji.py
+
+a creuser : 
+    fusion des scripts pour un fonctionnement parfait 

@@ -5,7 +5,7 @@ intents = discord.Intents.default()
 intents.members = True
 client = discord.Client(intents=intents)
 
-ROLE = "emoji 1"
+ROLE = "role de bienvenue"
 
 @client.event
 async def on_member_join(member):

@@ -1,6 +1,7 @@
 from files import *
 import discord
 from discord.ext import commands
+from discord.utils import get
 
 client = discord.Client()
 client = commands.Bot(command_prefix = "!")
@@ -8,12 +9,17 @@ client = commands.Bot(command_prefix = "!")
 # @client.event
 # async def on_ready():
 #     print("le bot est pret et fonctionnel ")
+ROLE = "role de bienvenue"
 
+@client.event
+async def on_member_join(member):
+    role = get(member.guild.roles, name=ROLE)
+    await member.add_roles(role)
 
 class Myclient(discord.Client):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.target_message_id = 965375310575050752
+        self.target_message_id = 965723572876222585
 
     async def on_ready(self):
         print("ready")
@@ -23,15 +29,18 @@ class Myclient(discord.Client):
             return
         guild = client.get_guild(payload.guild_id)
         print(payload.emoji.name)
-        if payload.emoji.name == '😃':
-            role = discord.utils.get(guild.roles, name='emoji 1')
+        if payload.emoji.name == '🔞': 
+            role = discord.utils.get(guild.roles, name='+18')
             await payload.member.add_roles(role)
         elif payload.emoji.name == '😎':
-            role = discord.utils.get(guild.roles, name='emoji 2')
+            role = discord.utils.get(guild.roles, name='gens contents')
             await payload.member.add_roles(role)
-        elif payload.emoji.name == '😀':
-            role = discord.utils.get(guild.roles, name='emoji 3')
+        elif payload.emoji.name == '😡':
+            role = discord.utils.get(guild.roles, name='hyper actif')
             await payload.member.add_roles(role)
+        elif payload.emoji.name == '🆗':
+            role = discord.utils.get(guild.roles, name='role de bienvenue')
+            await payload.member.remove_roles(role)
 
     async def on_raw_reaction_remove(self, payload):
         if payload.message_id != self.target_message_id:
@@ -39,30 +48,19 @@ class Myclient(discord.Client):
         guild = client.get_guild(payload.guild_id)
         member = guild.get_member(payload.user_id)
         print(payload.emoji.name)
-        if payload.emoji.name == '😃':
-            role = discord.utils.get(guild.roles, name='emoji 1')
+        if payload.emoji.name == '🔞':
+            role = discord.utils.get(guild.roles, name='+18')
             await member.remove_roles(role)
         elif payload.emoji.name == '😎':
-            role = discord.utils.get(guild.roles, name='emoji 2')
+            role = discord.utils.get(guild.roles, name='gens contents')
             await member.remove_roles(role)
-        elif payload.emoji.name == '😀':
-            role = discord.utils.get(guild.roles, name='emoji 3')
+        elif payload.emoji.name == '😡':
+            role = discord.utils.get(guild.roles, name='hyper actif')
             await member.remove_roles(role)
-
-
-
-
-
 
 intents = discord.Intents.default()
 intents.members = True
-
 client = Myclient(intents=intents)
-
-
-# @client.command()
-# async def punch(ctx,arg1):
-#     await ctx.send(f'Punched {arg1}')
 
 @client.event
 async def on_message(message):
