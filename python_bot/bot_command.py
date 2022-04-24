@@ -1,21 +1,26 @@
 from discord.ext import commands
 from files import *
 
-bot = commands.Bot(command_prefix = "!")
+import discord
 
-#explication des commandes : https://www.youtube.com/watch?v=-WbEpr-qtW8
+from discord.utils import get
+intents = discord.Intents.default()
+intents.members = True
+client = discord.Client(intents=intents)
+
+bot = commands.Bot(command_prefix='$')
 
 @bot.command()
-async def punch(ctx,arg1):
-    await ctx.send(f'Punched {arg1}')
+async def test(ctx, arg):
+    await ctx.send(arg)
 
 
 @bot.command()
-async def info(ctx):
-    await ctx.send(ctx.guild)
-    await ctx.send(ctx.author)
-    await ctx.send(ctx.message.id)
+async def addrole(ctx, user: discord.Member):
     
+    guild = ctx.guild # You can remove this if you don't need it for something other
+    role = ctx.guild.get_role(965376110781136906)
+    await user.add_roles(role)
 
 
 bot.run(bot_api())

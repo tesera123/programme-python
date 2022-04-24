@@ -7,6 +7,7 @@ client = discord.Client(intents=intents)
 
 ROLE = "role de bienvenue"
 
+
 @client.event
 async def on_member_join(member):
     role = get(member.guild.roles, name=ROLE)
