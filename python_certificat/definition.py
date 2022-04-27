@@ -9,6 +9,7 @@ def lecture_du_certificat(cert_file):
     issued_to = subject.CN    # the Common Name field
     issuer = cert.get_issuer()
     issued_by = issuer.CN
+    return cert,subject,not_after,not_before,issued_to,issuer,issued_by
 
 def calcul_date(date_cer):
     parse_format = "%Y%m%d"
