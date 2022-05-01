@@ -19,9 +19,10 @@ def calcul_date(date_cer):
     output_time_after = calcul_time.strftime(out_format)
     return output_time_after
 
-# def calcul_day(date):
-#     date_format = "%m/%d/%Y"
-#     a = datetime.strptime('8/18/2008', date_format)
-#     b = datetime.strptime('9/26/2008', date_format)
-#     delta = b - a
-#     print delta.days # that's it    
+def calcul_day(date_certificat):
+    date_today = datetime.datetime.today().date()
+    d1_converted = datetime.datetime.strptime(str(date_today),'%Y-%m-%d')
+    d2_converted = datetime.datetime.strptime(date_certificat,'%Y-%m-%d')
+    day = (d2_converted - d1_converted).days
+    return day
+    print(day)
